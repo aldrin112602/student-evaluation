@@ -5,6 +5,8 @@ use App\Models\Grade;  // Import the Grade model
 use App\Models\Faculty;
 use Illuminate\Http\Request;
 use App\Models\WupAutomate;
+use App\Models\User;
+
 
 class FacultyController extends Controller
 {
@@ -47,6 +49,8 @@ class FacultyController extends Controller
      // Get student ID and name from the session (if session is being used)
      $studentId = $request->input('student_id') ?? session('student_id');
      $studentName = $request->input('student_name') ?? session('student_name');
+     $email = User::where('fullname', $studentName)->first()->email;
+
       
      // Fetch grades for the student
      $grades = Grade::where('student_id', $studentId)->get();
@@ -65,6 +69,6 @@ class FacultyController extends Controller
      }
  
      // Pass the grades, student name, student ID, year, and status to the view
-     return view('grades.faculty', compact('grades', 'studentName', 'studentId', 'year', 'status'));
+     return view('grades.faculty', compact('grades', 'studentName', 'studentId', 'year', 'status', 'email'));
  }
     }

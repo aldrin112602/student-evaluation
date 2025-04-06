@@ -1334,6 +1334,7 @@
     <form action="{{ route('save-note') }}" method="POST" id="note-form">
     @csrf
     <input type="hidden" name="student_id" value="{{ session('student_id') }}">
+    <input type="hidden" name="email" value="{{ $email }}">
     
     <div class="note-container mb-3 " style="text-align: left;">
         <label for="deficiency-note">Deficiency:</label>

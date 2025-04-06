@@ -12,6 +12,8 @@ use App\Mail\NoteSaved; // Don't forget to import the mailable
 use Illuminate\Support\Facades\Mail; // Import the Mail facade
 use App\Models\RequestEvaluation;
 use App\Models\CompletionForm;
+use App\Http\Controllers\MailEvaluationController;
+
 
 class GradesController extends Controller
 {
@@ -58,6 +60,12 @@ class GradesController extends Controller
     $user = Auth::user();
     $userId = $user->user_id;  // Assuming user_id is the correct column in users table
     $evaluatedBy = $user->fullname;  // Get the full name of the logged-in user
+    $email = $request->email;
+    $mailer = new MailEvaluationController();
+
+    
+
+    
 
     // Check if the user is an admin or faculty
     if (!in_array($user->role, ['admin', 'faculty'])) {
@@ -99,7 +107,17 @@ class GradesController extends Controller
             $evaluation->save();
         }
 
-        return redirect()->back()->with('success', 'Note updated successfully!');
+        // send mail here
+        // Prepare email details
+        $details = [
+            'subject' => 'Evaluation Complete',
+            'greeting' => "Hi {$studentName},",
+            'message' => 'The evaluation process has already been completed. Please sign in to the site to view the evaluation results. Thank you!'
+        ];
+
+        if($mailer->notifyStudentEvaluationDone($email)) {
+            return redirect()->back()->with('success', 'Note updated successfully!');
+        }  
     } else {
         // If no note exists, create a new note for the student
         $note = new Note();
@@ -120,8 +138,10 @@ class GradesController extends Controller
             $evaluation->status = 'completed'; // Or whatever status you want
             $evaluation->save();
         }
-
-        return redirect()->back()->with('success', 'Note saved successfully!');
+        // send mail here
+        if($mailer->notifyStudentEvaluationDone($email)) {
+            return redirect()->back()->with('success', 'Note saved successfully!');
+        }  
     }
 }
 
