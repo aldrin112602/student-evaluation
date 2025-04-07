@@ -24,6 +24,7 @@ class StudentsController extends Controller
             // Attach the evaluation status to the student object
             $student->evaluation_status = $evaluationStatus ? $evaluationStatus->status : 'none';  // Default to 'none' if no status
         }
+        
 
         // Pass the students to the view located in students/index.blade.php
         return view('students.index', compact('bsitStudents'));

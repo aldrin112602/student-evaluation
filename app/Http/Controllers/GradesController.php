@@ -156,11 +156,25 @@ public function uploadHelpRequest(Request $request)
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
     ]);
 
-    // Get the original image name
-    $imageName = $request->file('image')->getClientOriginalName();
+    $imagePath = null;
 
-    // Store the image in 'public/images' directory and retrieve the path
-    $imagePath = $request->file('image')->storeAs('public/images', $imageName);
+
+    if ($request->hasFile('image')) {
+        // Define the target directory in the public path
+        $destinationPath = public_path('uploads');
+        $file = $request->file('image');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $imagePath = 'uploads/' . $fileName; // Store the path for database
+
+        // Check if the directory exists, if not, create it
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0777, true);
+        }
+
+        // Move the uploaded file to the target directory
+        $file->move($destinationPath, $fileName);
+
+    }
 
     // Save the data in the 'completion_forms' table, using the logged-in student's ID
     CompletionForm::create([

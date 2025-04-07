@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Note;
 use Illuminate\Support\Facades\Log;  // For logging purposes
 use App\Models\WupAutomate;
+use App\Models\CompletionForm;
 
 class StudentGradeController extends Controller
 {
@@ -50,8 +51,13 @@ class StudentGradeController extends Controller
      $status = 'Not available';
  }
 
+
+ $files = CompletionForm::where('student_id', $studentId)->get();
+
+
+
  // Pass the grades data to the view
-        return view('grades.studentgrades', compact('grades', 'studentId', 'studentName', 'year', 'status'));
+        return view('grades.studentgrades', compact('grades', 'studentId', 'studentName', 'year', 'status', 'files'));
     }
 
     // Method to show grades for faculty based on student ID and student name
@@ -59,6 +65,8 @@ class StudentGradeController extends Controller
     {
         // Example: Retrieve grades for the student from the database
         $grades = Grade::where('student_id', $studentId)->get();
+
+       
 
         // Pass the student grades and details to the view
         return view('grades.faculty', compact('grades', 'studentId', 'studentName'));

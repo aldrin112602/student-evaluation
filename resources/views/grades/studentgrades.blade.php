@@ -1364,6 +1364,12 @@
     
     
     @if(auth()->user()->role === 'student')
+
+    {{-- display files --}}
+    @foreach ($files as $file)
+        <img src="{{ asset($file->image) }}" alt="{{ $file->name }}" class="img-fluid mb-3" style="max-width: 300px;">
+    @endforeach
+
     <!-- Upload Completion Form Button -->
     <div style="text-align: left; margin-top: 20px;">
         <button type="button" class="btn btn-warning btn-lg" style="padding: 12px 20px; font-size: 16px;" data-toggle="modal" data-target="#uploadModal">
